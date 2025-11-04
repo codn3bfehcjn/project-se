@@ -17,7 +17,7 @@ export const generateText = async (req, res) => {
     }
 
     const payload = {
-      model: "mistralai/mistral-7b-instruct", // free-tier, high-quality instruct model
+      model: "mistralai/mistral-7b-instruct",
       messages: [
         { role: "system", content: "You are a helpful assistant." },
         { role: "user", content: prompt }
@@ -34,7 +34,7 @@ export const generateText = async (req, res) => {
       timeout: 60_000
     });
 
-    // Normalize extraction across provider response shapes
+   
     const text =
       response.data?.choices?.[0]?.message?.content ||
       response.data?.output ||
@@ -51,7 +51,6 @@ export const generateText = async (req, res) => {
   } catch (err) {
     console.error("OpenRouter API Error:", err.response?.data || err.message);
 
-    // Provide actionable client message while logging full server-side details
     const details = err.response?.data || err.message;
     return res.status(500).json({ error: "Failed to generate text", details });
   }
