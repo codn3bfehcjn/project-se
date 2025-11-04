@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => res.json({ message: "OpenRouter AI Backend" }));
+app.get("/check", (req, res) => res.send("Backend is running"));
 app.use("/api", aiRoutes);
 
 export default app;
