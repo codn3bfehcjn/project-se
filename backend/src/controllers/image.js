@@ -1,7 +1,8 @@
 import fs from "node:fs";
 import axios from "axios";
 import FormData from "form-data";
-import "dotenv/config"; // load environment variables
+import dotenv from "dotenv";
+dotenv.config()
 
 export const generateImage = async (req, res) => {
   try {
