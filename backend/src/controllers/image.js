@@ -4,6 +4,8 @@ import FormData from "form-data";
 import dotenv from "dotenv";
 dotenv.config();
 
+console.log("Stability Key Loaded:", process.env.STABILITY_API_KEY ? "✅ Yes" : "❌ No");
+
 export const generateImage = async (req, res) => {
   try {
     const payload = {
