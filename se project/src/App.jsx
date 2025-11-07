@@ -29,7 +29,7 @@ export default function AICreatorApp() {
       });
 
       const data = await response.json();
-      console.log(data);
+      console.log(response);
       if (activeTab === 'writer') {
         setResult(data.text || 'Generated content will appear here...');
       } else {
@@ -289,6 +289,7 @@ export default function AICreatorApp() {
                       <div className="text-center p-12">
 
                         <p className="text-gray-400 text-lg font-medium">Your generated image will appear here</p>
+                        <img src="" alt="" srcset="" />
                         <p className="text-gray-400 text-sm mt-2">Describe what you want to see and click Generate</p>
                       </div>
                     )}
