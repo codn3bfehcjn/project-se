@@ -35,7 +35,7 @@ export const generateImage = async (req, res) => {
       //will try to do it with cloudinary cloud upload to get a link to show in frontend easily
       return res.status(200).json({
         message: "✅ Image generated successfully",
-        imageUrl,
+        // imageUrl,
       });
     }
 
