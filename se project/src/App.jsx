@@ -29,9 +29,7 @@ export default function AICreatorApp() {
       });
 
       const data = await response.json();
-      console.log(data.text);
-      
-
+      console.log(data);
       if (activeTab === 'writer') {
         setResult(data.text || 'Generated content will appear here...');
       } else {
