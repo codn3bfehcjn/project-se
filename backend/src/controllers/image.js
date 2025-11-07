@@ -1,23 +1,18 @@
-import fs from "node:fs";
 import axios from "axios";
 import FormData from "form-data";
 import dotenv from "dotenv";
 dotenv.config();
 
-console.log("Stability Key Loaded:", process.env.STABILITY_API_KEY ? "✅ Yes" : "❌ No");
-
 export const generateImage = async (req, res) => {
   try {
     const payload = {
-      prompt: "Lighthouse on a cliff overlooking the ocean",
+      prompt: req.body.prompt || "Lighthouse on a cliff overlooking the ocean",
       aspect_ratio: "1:1",
       output_format: "jpeg",
     };
 
     const formData = new FormData();
-    Object.entries(payload).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
+    Object.entries(payload).forEach(([key, value]) => formData.append(key, value));
 
     const response = await axios.post(
       "https://api.stability.ai/v2beta/stable-image/generate/core",
@@ -33,18 +28,16 @@ export const generateImage = async (req, res) => {
     );
 
     if (response.status === 200) {
-      const imageBuffer = Buffer.from(response.data);
-      fs.writeFileSync("./lighthouse.jpeg", imageBuffer);
-      return res.status(200).json({ message: "✅ Image generated", file: "lighthouse.jpeg" });
+      const imageBase64 = Buffer.from(response.data).toString("base64");
+      return res.status(200).json({
+        message: "✅ Image generated successfully",
+        image: `data:image/jpeg;base64,${imageBase64}`,
+      });
     }
 
     throw new Error(`${response.status}: ${response.data.toString()}`);
   } catch (error) {
-    if (error.response) {
-      console.error("❌ API Error:", error.response.status, error.response.data.toString());
-    } else {
-      console.error("❌ General Error:", error.message);
-    }
+    console.error("❌ Error:", error.response?.status || error.message);
     return res.status(500).json({ error: error.message });
   }
 };
