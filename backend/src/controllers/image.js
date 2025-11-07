@@ -29,20 +29,10 @@ export const generateImage = async (req, res) => {
       }
     );
 
+    console.log(response);
+    
     if (response.status === 200) {
-      // Define path where image will be saved
-      const outputDir = path.resolve("public/generated");
-      if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
-
-      const fileName = `image_${Date.now()}.jpeg`;
-      const filePath = path.join(outputDir, fileName);
-
-      // Save the image
-      fs.writeFileSync(filePath, Buffer.from(response.data));
-
-      // Return a public URL
-      const imageUrl = `https://project-se-1.onrender.com/generated/${imageName}`;
-
+      //will try to do it with cloudinary cloud upload to get a link to show in frontend easily
       return res.status(200).json({
         message: "✅ Image generated successfully",
         imageUrl,
