@@ -41,7 +41,7 @@ export const generateImage = async (req, res) => {
       fs.writeFileSync(filePath, Buffer.from(response.data));
 
       // Return a public URL
-      const imageUrl = `${req.protocol}://${req.get("host")}/generated/${fileName}`;
+      const imageUrl = `https://project-se-1.onrender.com/generated/${imageName}`;
 
       return res.status(200).json({
         message: "✅ Image generated successfully",
