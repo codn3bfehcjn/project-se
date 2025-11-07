@@ -28,7 +28,7 @@ export const generateImage = async (req, res) => {
     );
 
     if (response.status === 200) {
-      const imageBase64 = Buffer.from(response.data).toString("base64");
+      const imageBase64 = Buffer.from(response.data);
       return res.status(200).json({
         message: "✅ Image generated successfully",
         image: `data:image/jpeg;base64,${imageBase64}`,
