@@ -97,10 +97,10 @@ export default function AICreatorApp() {
   const setExamplePrompt = (example) => setPrompt(example);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 relative overflow-hidden">
+    <div className="min-h-screen  from-indigo-100 via-purple-50 to-pink-100 relative overflow-hidden">
       {/* Header */}
       <div className="text-center py-12">
-        <h1 className="text-5xl font-extrabold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+        <h1 className="text-5xl font-extrabold  from-purple-500 to-pink-500 bg-clip-text text-transparent">
           AI Creator Studio
         </h1>
         <p className="text-purple-600 mt-2 text-lg font-medium">
@@ -156,7 +156,7 @@ export default function AICreatorApp() {
           <button
             onClick={handleGenerate}
             disabled={loading || !prompt.trim()}
-            className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl shadow-md hover:opacity-90 disabled:opacity-50 transition"
+            className="px-6 py-3  from-purple-500 to-pink-500 text-white font-bold rounded-xl shadow-md hover:opacity-90 disabled:opacity-50 transition"
           >
             {loading ? "Generating..." : "Generate"}
           </button>
