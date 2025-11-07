@@ -49,11 +49,10 @@ export default function AICreatorApp() {
       if (activeTab === "writer") {
         setResult(data.text || "No text generated.");
       } else {
-        const base64 = data.image;
-        if (base64 && base64.startsWith("data:image")) {
-          setImageUrl(base64);
+        if (data.imageUrl) {
+          setImageUrl(data.imageUrl); // ✅ now directly uses the URL from backend
         } else {
-          throw new Error("Invalid image response from server.");
+          throw new Error("Invalid image URL from server.");
         }
       }
     } catch (error) {

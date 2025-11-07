@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import axios from "axios";
 import FormData from "form-data";
 import dotenv from "dotenv";
@@ -28,10 +30,22 @@ export const generateImage = async (req, res) => {
     );
 
     if (response.status === 200) {
-      const imageBase64 = Buffer.from(response.data);
+      // Define path where image will be saved
+      const outputDir = path.resolve("public/generated");
+      if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+
+      const fileName = `image_${Date.now()}.jpeg`;
+      const filePath = path.join(outputDir, fileName);
+
+      // Save the image
+      fs.writeFileSync(filePath, Buffer.from(response.data));
+
+      // Return a public URL
+      const imageUrl = `${req.protocol}://${req.get("host")}/generated/${fileName}`;
+
       return res.status(200).json({
         message: "✅ Image generated successfully",
-        image: `data:image/jpeg;base64,${imageBase64}`,
+        imageUrl,
       });
     }
 
