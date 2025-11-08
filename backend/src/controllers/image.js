@@ -1,30 +1,34 @@
-import fs from "node:fs";
-import path from "node:path";
 import axios from "axios";
 import FormData from "form-data";
 import dotenv from "dotenv";
+import { v2 as cloudinary } from "cloudinary";
+
 dotenv.config();
 
-// Ensure the folder exists
-const generatedDir = path.join(process.cwd(), "generated");
-if (!fs.existsSync(generatedDir)) fs.mkdirSync(generatedDir);
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export const generateImage = async (req, res) => {
   try {
-    const prompt = req.body.prompt || "Lighthouse on a cliff overlooking the ocean";
-
     const payload = {
-      prompt,
+      prompt: req.body.prompt || "Lighthouse on a cliff overlooking the ocean",
       output_format: "webp",
     };
 
-    const response = await axios.postForm(
+    const formData = new FormData();
+    Object.entries(payload).forEach(([key, value]) => formData.append(key, value));
+
+    const response = await axios.post(
       "https://api.stability.ai/v2beta/stable-image/generate/ultra",
-      axios.toFormData(payload, new FormData()),
+      formData,
       {
         responseType: "arraybuffer",
-        validateStatus: () => true,
         headers: {
+          ...formData.getHeaders(),
           Authorization: `Bearer ${process.env.STABILITY_API_KEY}`,
           Accept: "image/*",
         },
@@ -32,22 +36,18 @@ export const generateImage = async (req, res) => {
     );
 
     if (response.status === 200) {
-      const timestamp = Date.now();
-      const imageName = `image_${timestamp}.webp`;
-      const imagePath = path.join(generatedDir, imageName);
+      // Convert image buffer to base64 string
+      const base64 = Buffer.from(response.data).toString("base64");
+      const dataUri = `data:image/webp;base64,${base64}`;
 
-      // Save file
-      fs.writeFileSync(imagePath, Buffer.from(response.data));
-
-      // Use Render’s HTTPS domain dynamically
-      const baseUrl = process.env.RENDER_EXTERNAL_URL || "http://localhost:5000";
-      const imageUrl = `${baseUrl}/generated/${imageName}`;
-
-      console.log(`✅ Image generated: ${imageUrl}`);
+      // Upload to Cloudinary
+      const uploadResponse = await cloudinary.uploader.upload(dataUri, {
+        folder: "ai_generated_images",
+      });
 
       return res.status(200).json({
-        message: "✅ Image generated successfully",
-        imageUrl,
+        message: "✅ Image generated and uploaded successfully",
+        imageUrl: uploadResponse.secure_url, // HTTPS URL from Cloudinary
       });
     }
 
