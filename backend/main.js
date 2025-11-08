@@ -1,15 +1,15 @@
 import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import aiRoutes from "./src/routes/routes.js";
-
-dotenv.config();
+import path from "node:path";
 
 const app = express();
-app.use(cors());
 app.use(express.json());
-app.use("/api", aiRoutes);
-app.get("/check", (req, res) => res.send("Backend is running")),console.log("ping recieved");
-app.listen(process.env.PORT || 5000, () => {
-  console.log(`🚀 Server running on http://localhost:${process.env.PORT || 5000}`);
-});
+
+// Serve generated images
+app.use("/generated", express.static(path.join(process.cwd(), "generated")));
+
+// Import route
+import { generateImage } from "./controllers/generateImage.js";
+app.post("/api/generate-image", generateImage);
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

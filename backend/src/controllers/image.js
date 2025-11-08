@@ -1,13 +1,20 @@
 import fs from "node:fs";
+import path from "node:path";
 import axios from "axios";
 import FormData from "form-data";
 import dotenv from "dotenv";
 dotenv.config();
 
+// Ensure the folder exists
+const generatedDir = path.join(process.cwd(), "generated");
+if (!fs.existsSync(generatedDir)) fs.mkdirSync(generatedDir);
+
 export const generateImage = async (req, res) => {
   try {
+    const prompt = req.body.prompt || "Lighthouse on a cliff overlooking the ocean";
+
     const payload = {
-      prompt: "Lighthouse on a cliff overlooking the ocean",
+      prompt,
       output_format: "webp",
     };
 
@@ -15,8 +22,8 @@ export const generateImage = async (req, res) => {
       "https://api.stability.ai/v2beta/stable-image/generate/ultra",
       axios.toFormData(payload, new FormData()),
       {
-        responseType: "arraybuffer", // image binary data
-        validateStatus: () => true,  // accept all statuses
+        responseType: "arraybuffer",
+        validateStatus: () => true,
         headers: {
           Authorization: `Bearer ${process.env.STABILITY_API_KEY}`,
           Accept: "image/*",
@@ -24,27 +31,29 @@ export const generateImage = async (req, res) => {
       }
     );
 
-    // Log status and type of response
-    console.log("Status:", response.status);
-    console.log("Headers:", response.headers);
-    console.log("Data type:", typeof response.data, "Length:", response.data.byteLength);
-
     if (response.status === 200) {
-      // Optionally save to inspect
-      fs.writeFileSync("./debug_image.webp", Buffer.from(response.data));
-      console.log("✅ Image written to debug_image.webp");
+      const timestamp = Date.now();
+      const imageName = `image_${timestamp}.webp`;
+      const imagePath = path.join(generatedDir, imageName);
 
-      return res
-        .status(200)
-        .json({ message: "✅ Image generated", note: "Saved locally as debug_image.webp" });
-    } else {
-      console.error("❌ Error:", response.status, response.data.toString());
-      return res.status(response.status).json({
-        error: `${response.status}: ${response.data.toString()}`,
+      // Save file
+      fs.writeFileSync(imagePath, Buffer.from(response.data));
+
+      // Use Render’s HTTPS domain dynamically
+      const baseUrl = process.env.RENDER_EXTERNAL_URL || "http://localhost:5000";
+      const imageUrl = `${baseUrl}/generated/${imageName}`;
+
+      console.log(`✅ Image generated: ${imageUrl}`);
+
+      return res.status(200).json({
+        message: "✅ Image generated successfully",
+        imageUrl,
       });
     }
+
+    throw new Error(`${response.status}: ${response.data.toString()}`);
   } catch (error) {
-    console.error("❌ Exception:", error.message);
+    console.error("❌ Image generation error:", error.message);
     return res.status(500).json({ error: error.message });
   }
 };
