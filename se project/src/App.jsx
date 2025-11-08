@@ -1,13 +1,9 @@
 import React, { useState } from "react";
 import {
-  FileText,
   Loader2,
   Download,
   Copy,
   Check,
-  ImageIcon,
-  ChevronRight,
-  Sparkles,
 } from "lucide-react";
 
 export default function AICreatorApp() {
