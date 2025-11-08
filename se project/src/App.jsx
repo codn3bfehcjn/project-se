@@ -4,6 +4,7 @@ import {
   Download,
   Copy,
   Check,
+
 } from "lucide-react";
 
 export default function AICreatorApp() {
@@ -80,26 +81,26 @@ export default function AICreatorApp() {
   const examplePrompts =
     activeTab === "writer"
       ? [
-          "Write a compelling product description for eco-friendly water bottles",
-          "Create a motivational story about overcoming challenges",
-          "Draft a professional email for a job application",
-        ]
+        "Write a compelling product description for eco-friendly water bottles",
+        "Create a motivational story about overcoming challenges",
+        "Draft a professional email for a job application",
+      ]
       : [
-          "A serene Japanese garden with cherry blossoms at sunset",
-          "Cyberpunk city street with neon lights and rain",
-          "Minimalist modern workspace with plants and natural light",
-        ];
+        "A serene Japanese garden with cherry blossoms at sunset",
+        "Cyberpunk city street with neon lights and rain",
+        "Minimalist modern workspace with plants and natural light",
+      ];
 
   const setExamplePrompt = (example) => setPrompt(example);
 
   return (
-    <div className="min-h-screen  from-indigo-100 via-purple-50 to-pink-100 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-r from-gray-200 to-gray-400 relative overflow-hidden">
       {/* Header */}
       <div className="text-center py-12">
-        <h1 className="text-5xl font-extrabold  from-purple-500 to-pink-500 bg-clip-text text-transparent">
+        <h1 className="text-5xl font-extrabold   ">
           AI Creator Studio
         </h1>
-        <p className="text-purple-600 mt-2 text-lg font-medium">
+        <p className="text-gray-700 mt-2 text-xl font-medium">
           Generate content and visuals with AI
         </p>
       </div>
@@ -108,28 +109,26 @@ export default function AICreatorApp() {
       <div className="max-w-4xl mx-auto mb-8 flex bg-white rounded-xl shadow-md overflow-hidden">
         <button
           onClick={() => setActiveTab("writer")}
-          className={`flex-1 py-4 font-semibold transition ${
-            activeTab === "writer"
-              ? "bg-purple-600 text-white"
-              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-          }`}
+          className={`flex-1 py-4 font-semibold transition ${activeTab === "writer"
+              ? "bg-gray-400 text-black text-xl"
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200 text-xl"
+            }`}
         >
           AI Writer
         </button>
         <button
           onClick={() => setActiveTab("image")}
-          className={`flex-1 py-4 font-semibold transition ${
-            activeTab === "image"
-              ? "bg-pink-600 text-white"
-              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-          }`}
+          className={`flex-1 py-4 font-semibold transition ${activeTab === "image"
+              ? "bg-gray-400 text-black text-xl"
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200 text-xl"
+            }`}
         >
           Image Generator
         </button>
       </div>
 
       {/* Input */}
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl p-8 shadow-lg">
+      <div className="max-w-4xl mx-auto bg-gray-200 rounded-2xl p-8 shadow-lg">
         <label className="block mb-3 font-bold text-lg text-gray-700">
           {activeTab === "writer"
             ? "What would you like to write about?"
@@ -141,7 +140,7 @@ export default function AICreatorApp() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && handleGenerate()}
-            className="flex-1 px-5 py-3 border rounded-xl focus:ring-2 focus:ring-purple-400 outline-none"
+            className="flex-1 px-5 py-3 border rounded-xl focus:ring-2 focus:ring-purple-400 outline-none font-extrabold text-xl"
             placeholder={
               activeTab === "writer"
                 ? "E.g., Write a blog about the future of AI..."
@@ -152,7 +151,8 @@ export default function AICreatorApp() {
           <button
             onClick={handleGenerate}
             disabled={loading || !prompt.trim()}
-            className="px-6 py-3  from-purple-500 to-pink-500 text-white font-bold rounded-xl shadow-md hover:opacity-90 disabled:opacity-50 transition"
+            className="px-6 py-3 border-2 bg-linear-to-r from-gray-200 to-gray-300 text-black
+             font-bold rounded-xl shadow-md hover:opacity-90 disabled:opacity-50 transition text-xl"
           >
             {loading ? "Generating..." : "Generate"}
           </button>
@@ -164,7 +164,7 @@ export default function AICreatorApp() {
             <button
               key={idx}
               onClick={() => setExamplePrompt(example)}
-              className="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition"
+              className="text-md font-bold bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition"
             >
               {example}
             </button>
@@ -173,7 +173,7 @@ export default function AICreatorApp() {
       </div>
 
       {/* Output */}
-      <div className="max-w-4xl mx-auto mt-8 bg-white rounded-2xl p-8 shadow-xl">
+      <div className="w-auto mx-auto mt-8 bg-white rounded-2xl p-8 shadow-xl">
         {activeTab === "writer" ? (
           <>
             {loading ? (
@@ -236,6 +236,8 @@ export default function AICreatorApp() {
                 Your generated image will appear here.
               </p>
             )}
+
+
           </>
         )}
       </div>
